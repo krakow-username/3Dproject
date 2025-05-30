@@ -1,4 +1,4 @@
-import java.awt.Robot;
+ import java.awt.Robot;
 
 color white = #FFFFFF;
 color blue = #00F4FF;
@@ -10,6 +10,7 @@ PImage map, miku, diamond;
 
 
 int blockSize = 50;
+int gridSize = 4000;
 
 int focusDistance = 600;
 int speed = 50;
@@ -56,13 +57,15 @@ void draw() {
 }
 
 void drawMap() {
+  pushMatrix();
+  translate(0,-blockSize,0);
   for (int i = 0; i < miku.width; i++) {
     for (int j = 0; j < miku.height; j++) {
       color c =miku.get(i, j);
       if ( c == blue) {
          pushMatrix();
         noStroke();
-        cubeD(i * blockSize - 2000, height, j * blockSize - 2000,diamond);
+        cubeD(i * blockSize - gridSize, height, j * blockSize - gridSize,diamond);
         popMatrix();
       } else if (c != white) {
         pushMatrix();
@@ -70,12 +73,13 @@ void drawMap() {
         fill(c);
         stroke(100);
         noStroke();
-        translate(i * blockSize - 2000, height, j * blockSize - 2000);
+        translate(i * blockSize - gridSize, height, j * blockSize - gridSize);
         box(blockSize, blockSize, blockSize);
         popMatrix();
       }
     }
   }
+  popMatrix();
 }
 
 void drawFocalPoint() {
