@@ -48,6 +48,8 @@ void setup() {
 }
 
 void draw() {
+  //lights();
+  pointLight(255,255,255,eyeX,eyeY,eyeZ);
   background(0);
   camera(eyeX, eyeY, eyeZ, focX, focY, focZ, tiltX, tiltY, tiltZ);
   drawLine();
