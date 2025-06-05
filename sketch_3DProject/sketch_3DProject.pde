@@ -1,25 +1,27 @@
- import java.awt.Robot;
+import java.awt.Robot;
 
 color white = #FFFFFF;
 color blue = #00F4FF;
 color top = color(229, 134, 37);
+color sky =#A0F1F7;
 
 boolean wkey, akey, skey, dkey, spacekey, shiftkey, skipFrame;
 float eyeX, eyeY, eyeZ, focX, focY, focZ, tiltX, tiltY, tiltZ;
 Robot rbt;
 PImage map, miku, diamond, depthMap;
 
-float sunAngle;
+float sunAngle = 3;
 int blockSize = 50;
 int gridSize = 4000;
+
 
 int focusDistance = 600;
 int speed = 50;
 float LRheadAngle, UDheadAngle;
 float mouseSen = 0.01;
 
-  int sunx = 0;
-  int suny = 0 ;
+int sunx = 0;
+int suny = 0 ;
 
 void setup() {
   fullScreen(P3D);
@@ -38,6 +40,9 @@ void setup() {
   skipFrame = false;
   LRheadAngle = radians(270);
   noCursor();
+  lightSpecular(0, 0, 0);
+  ambientLight(0, 0, 0);
+  lightSpecular(255, 255, 255);
 
   map = loadImage("map.png");
   miku = loadImage("hatsune_miku_pixelart_by_magnet_crayon-d5v6fpj.png");
@@ -55,56 +60,75 @@ void setup() {
 void draw() {
   //lights();
   //pointLight(255,255,255,eyeX,eyeY,eyeZ);
-  background(0);
+  background(sky);
   camera(eyeX, eyeY, eyeZ, focX, focY, focZ, tiltX, tiltY, tiltZ);
   drawLine();
   drawFocalPoint();
   controlCamera();
-  drawMap();
   sun();
+  drawMap();
 }
 
 
-void sun(){
-  lights();
-  sunAngle = sunAngle + 0.05;
+void sun() {
+  //lights();
+  sunAngle = sunAngle + 0.005;
+  ambientLight(50, 50, 50);
+  //directionalLight(50, 50, 50, 0, -1, 0);
 
-  
   pushMatrix();
-  translate(sunx + sin(sunAngle)*8000,suny + cos(sunAngle)*8000,0);
+  translate( sin(sunAngle)*8000, cos(sunAngle)*8000, 0);
+  fill(#FFEA43);
   sphere(500);
-  //pointLight(255,255,255,0,0 ,0);
+  pointLight(255, 255, 255, 0, 510, 0);
   popMatrix();
-  
+  println(suny);
+  if (cos(sunAngle)*8000< -1000) {
+    sky = lerpColor(#4334F5, #A0F1F7, map(cos(sunAngle)*8000, -1000, -8000, 0, 1));
+  } else if (cos(sunAngle)*8000< height && cos(sunAngle)*8000 > -1000) {
+    sky = lerpColor(#F54565, #4334F5, map(cos(sunAngle)*8000, height, -1000, 0, 1));
+  } else {
+    sky = lerpColor(#F54565, 0, map(cos(sunAngle)*8000, height, 8000, 0, 1));
+  }
+  //colorMode(HSB);
+  //ambientLight(0, 255, 0);
+  //colorMode(RGB);
   //spotLight(255,255,255,sunx + sin(sunAngle)*8000,suny + cos(sunAngle)*8000,0,0,0,0,90,0);
+
+  //sky(eyeX,eyeY,eyeZ);
   
+  //
+  stroke(255);
+  strokeWeight(10);
+line(0,height,0,sin(sunAngle)*8000,cos(sunAngle)*8000,0);
+strokeWeight(1);
 }
 
 
 
 void drawMap() {
   pushMatrix();
-  translate(0,-blockSize,0);
+  translate(0, -blockSize, 0);
   for (int i = 0; i < miku.width; i++) {
     for (int j = 0; j < miku.height; j++) {
       color c =miku.get(i, j);
-      color depth = depthMap.get(i,j);
+      color depth = depthMap.get(i, j);
       int y = height;
       if (depth == color(229, 134, 37)) y = height - 5*blockSize/2;
-      if (depth ==  color(240,174,53)) y = height - 4*blockSize/2;
-      if (depth == color (249,218,70)) y = height - 3*blockSize/2;
-      if (depth == color(165,224,54)) y = height - 2*blockSize/2;
-      if (depth == color(83,197,116)) y = height - 1*blockSize/2;
-      if (depth == color(0,138,254))y = height ;
-      
+      if (depth ==  color(240, 174, 53)) y = height - 4*blockSize/2;
+      if (depth == color (249, 218, 70)) y = height - 3*blockSize/2;
+      if (depth == color(165, 224, 54)) y = height - 2*blockSize/2;
+      if (depth == color(83, 197, 116)) y = height - 1*blockSize/2;
+      if (depth == color(0, 138, 254))y = height ;
+
       if ( c == blue) {
-         pushMatrix();
+        pushMatrix();
         noStroke();
-        cubeD(i * blockSize - gridSize, y, j * blockSize - gridSize,diamond);
+        cubeD(i * blockSize - gridSize, y, j * blockSize - gridSize, diamond);
         popMatrix();
       } else if (c != white) {
         pushMatrix();
-        translate(blockSize/2,blockSize/2,blockSize/2);
+        translate(blockSize/2, blockSize/2, blockSize/2);
         fill(c);
         stroke(100);
         noStroke();
@@ -176,4 +200,5 @@ void drawLine() {
     line(i, height, -4000, i, height, 4000);
     line(-4000, height, i, 4000, height, i);
   }
+  noStroke();
 }
