@@ -15,3 +15,15 @@ void keyReleased() {
   if (key == ' ' )  spacekey = false;
   if (keyCode == SHIFT )  shiftkey = false;
 }
+
+boolean canMoveFoward(){
+ pushMatrix();
+  translate(eyeX,eyeY + blockSize,eyeZ);
+  fill(0);
+  box(blockSize);
+  popMatrix();
+  
+  
+ return true;
+  
+}

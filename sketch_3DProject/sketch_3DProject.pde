@@ -11,7 +11,7 @@ Robot rbt;
 PImage map, miku, diamond, depthMap;
 
 float sunAngle = 3;
-int blockSize = 50;
+int blockSize = 100;
 int gridSize = 4000;
 
 
@@ -67,6 +67,7 @@ void draw() {
   controlCamera();
   sun();
   drawMap();
+  gravity();
 }
 
 
@@ -82,7 +83,7 @@ void sun() {
   sphere(500);
   pointLight(255, 255, 255, 0, 510, 0);
   popMatrix();
-  println(suny);
+  //println(suny);
   if (cos(sunAngle)*8000< -1000) {
     sky = lerpColor(#4334F5, #A0F1F7, map(cos(sunAngle)*8000, -1000, -8000, 0, 1));
   } else if (cos(sunAngle)*8000< height && cos(sunAngle)*8000 > -1000) {
@@ -96,12 +97,12 @@ void sun() {
   //spotLight(255,255,255,sunx + sin(sunAngle)*8000,suny + cos(sunAngle)*8000,0,0,0,0,90,0);
 
   //sky(eyeX,eyeY,eyeZ);
-  
+
   //
   stroke(255);
   strokeWeight(10);
-line(0,height,0,sin(sunAngle)*8000,cos(sunAngle)*8000,0);
-strokeWeight(1);
+  line(0, height, 0, sin(sunAngle)*8000, cos(sunAngle)*8000, 0);
+  strokeWeight(1);
 }
 
 
@@ -140,6 +141,27 @@ void drawMap() {
   }
   popMatrix();
 }
+
+void gravity() {
+  //watch video
+  float fx, fy, fz;
+  int mapx, mapy;
+  int y = 0;
+  color depth = depthMap.get((int)eyeX, (int)eyeZ);
+  if (depth == color(229, 134, 37)) y = height - 5*blockSize/2;
+  if (depth ==  color(240, 174, 53)) y = height - 4*blockSize/2;
+  if (depth == color (249, 218, 70)) y = height - 3*blockSize/2;
+  if (depth == color(165, 224, 54)) y = height - 2*blockSize/2;
+  if (depth == color(83, 197, 116)) y = height - 1*blockSize/2;
+  if (depth == color(0, 138, 254))y = height ;
+  //println(eyeY + " y " + y);
+  println(eyeX + " " + eyeZ);
+  
+  if (eyeY-blockSize < y ) {
+    eyeY+= 20;
+  }
+}
+
 
 void drawFocalPoint() {
   pushMatrix();
