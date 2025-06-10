@@ -12,7 +12,9 @@ PImage map, miku, diamond, depthMap;
 
 float sunAngle = 3;
 int blockSize = 100;
-int gridSize = 4000;
+int gridSize = 8000;
+
+int lastBlock = height;
 
 
 int focusDistance = 600;
@@ -28,7 +30,7 @@ void setup() {
   //size(1000, 800, P3D);
   textureMode(NORMAL);
   wkey = akey = skey = dkey = false;
-  eyeX = width/2;
+  eyeX = 0;
   eyeY = 500;
   eyeZ = 0;
   focX = width/2;
@@ -67,6 +69,7 @@ void draw() {
   controlCamera();
   sun();
   drawMap();
+  cord();
   gravity();
 }
 
@@ -109,23 +112,25 @@ void sun() {
 
 void drawMap() {
   pushMatrix();
-  translate(0, -blockSize, 0);
+  //translate(blockSize/2, blockSize/2, blockSize/2);
+  //translate(0, -blockSize, 0);
   for (int i = 0; i < miku.width; i++) {
     for (int j = 0; j < miku.height; j++) {
-      color c =miku.get(i, j);
+      color c =depthMap.get(i, j);
       color depth = depthMap.get(i, j);
-      int y = height;
-      if (depth == color(229, 134, 37)) y = height - 5*blockSize/2;
-      if (depth ==  color(240, 174, 53)) y = height - 4*blockSize/2;
-      if (depth == color (249, 218, 70)) y = height - 3*blockSize/2;
-      if (depth == color(165, 224, 54)) y = height - 2*blockSize/2;
-      if (depth == color(83, 197, 116)) y = height - 1*blockSize/2;
+      int y = lastBlock;
+      if (depth == color(229, 134, 37)) y = height - 5*blockSize;
+      if (depth ==  color(240, 174, 53)) y = height - 4*blockSize;
+      if (depth == color (249, 218, 70)) y = height - 3*blockSize;
+      if (depth == color(165, 224, 54)) y = height - 2*blockSize;
+      if (depth == color(83, 197, 116)) y = height - 1*blockSize;
       if (depth == color(0, 138, 254))y = height ;
+      lastBlock = y;
 
       if ( c == blue) {
         pushMatrix();
         noStroke();
-        cubeD(i * blockSize - gridSize, y, j * blockSize - gridSize, diamond);
+        cubeD(i * blockSize , y, j * blockSize , diamond);
         popMatrix();
       } else if (c != white) {
         pushMatrix();
@@ -133,7 +138,7 @@ void drawMap() {
         fill(c);
         stroke(100);
         noStroke();
-        translate(i * blockSize - gridSize, y, j * blockSize - gridSize);
+        translate(i * blockSize , y, j * blockSize );
         box(blockSize, blockSize, blockSize);
         popMatrix();
       }
@@ -144,19 +149,25 @@ void drawMap() {
 
 void gravity() {
   //watch video
-  float fx, fy, fz;
+  //float fx, fy, fz;
   int mapx, mapy;
-  int y = 0;
-  color depth = depthMap.get((int)eyeX, (int)eyeZ);
-  if (depth == color(229, 134, 37)) y = height - 5*blockSize/2;
-  if (depth ==  color(240, 174, 53)) y = height - 4*blockSize/2;
-  if (depth == color (249, 218, 70)) y = height - 3*blockSize/2;
-  if (depth == color(165, 224, 54)) y = height - 2*blockSize/2;
-  if (depth == color(83, 197, 116)) y = height - 1*blockSize/2;
+  int y = lastBlock;
+
+  mapx = int(eyeX / blockSize);
+  mapy = int(eyeZ/blockSize);
+
+  color depth = depthMap.get((int)mapx, (int)mapy);
+  if (depth == color(229, 134, 37)) y = height - 5*blockSize;
+  if (depth ==  color(240, 174, 53)) y = height - 4*blockSize;
+  if (depth == color (249, 218, 70)) y = height - 3*blockSize;
+  if (depth == color(165, 224, 54)) y = height - 2*blockSize;
+  if (depth == color(83, 197, 116)) y = height - 1*blockSize;
   if (depth == color(0, 138, 254))y = height ;
   //println(eyeY + " y " + y);
   println(eyeX + " " + eyeZ);
-  
+  lastBlock = y;
+  y-= blockSize*3;
+
   if (eyeY-blockSize < y ) {
     eyeY+= 20;
   }
@@ -174,7 +185,7 @@ void drawFocalPoint() {
 
 void controlCamera() {
   camera(eyeX, eyeY, eyeZ, focX, focY, focZ, tiltX, tiltY, tiltZ);
-  if (wkey) {
+  if (wkey && canMoveFoward()) {
     eyeZ += sin(LRheadAngle) *speed;
     eyeX += cos(LRheadAngle) * speed;
   }
@@ -216,11 +227,22 @@ void controlCamera() {
   }
 }
 
+void cord(){
+  stroke(#F23D3D);
+  strokeWeight(10);
+ line(0,0,0,0,5000,0); 
+ sphere(10);
+  
+  
+}
+
+
 void drawLine() {
   stroke(255);
-  for (int i = -4000; i < 4000; i+= blockSize) {
-    line(i, height, -4000, i, height, 4000);
-    line(-4000, height, i, 4000, height, i);
+  strokeWeight(1);
+  for (int i = -8000; i < 8000; i+= blockSize) {
+    line(i, height, -8000, i, height, 8000);
+    line(-8000, height, i, 8000, height, i);
   }
   noStroke();
 }
