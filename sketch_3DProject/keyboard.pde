@@ -22,12 +22,20 @@ boolean canMoveFoward() {
   mapx = int(eyeX / blockSize);
   mapy = int(eyeZ/blockSize);
   color depth = depthMap.get((int)mapx, (int)mapy);
-  if (depth == color(229, 134, 37)) y = height - 5*blockSize;
-  if (depth ==  color(240, 174, 53)) y = height - 4*blockSize;
-  if (depth == color (249, 218, 70)) y = height - 3*blockSize;
-  if (depth == color(165, 224, 54)) y = height - 2*blockSize;
-  if (depth == color(83, 197, 116)) y = height - 1*blockSize;
-  if (depth == color(0, 138, 254))y = height ;
+  //if (depth == color(229, 134, 37)) y = height - 5*blockSize;
+  //if (depth ==  color(240, 174, 53)) y = height - 4*blockSize;
+  //if (depth == color (249, 218, 70)) y = height - 3*blockSize;
+  //if (depth == color(165, 224, 54)) y = height - 2*blockSize;
+  //if (depth == color(83, 197, 116)) y = height - 1*blockSize;
+  //if (depth == color(0, 138, 254))y = height ;
+  
+  if (depth == color(230,138,39)) y = height - 5*blockSize;
+      if (depth ==  color(240, 175, 53)) y = height - 4*blockSize;
+      if (depth == color (246, 218, 69)) y = height - 3*blockSize;
+      if (depth == color(166, 224, 54)) y = height - 2*blockSize;
+      if (depth == color(124, 210, 84)) y = height - 2*blockSize;
+      if (depth == color(83, 197, 117)) y = height - 1*blockSize;
+      if (depth == color(4, 141, 247))y = height ;
    y-= blockSize*3;
   if (eyeY-blockSize > y ) {
     return false;

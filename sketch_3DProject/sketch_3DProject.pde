@@ -5,6 +5,8 @@ color blue = #00F4FF;
 color top = color(229, 134, 37);
 color sky =#A0F1F7;
 
+Gif hatsune;
+
 boolean wkey, akey, skey, dkey, spacekey, shiftkey, skipFrame;
 float eyeX, eyeY, eyeZ, focX, focY, focZ, tiltX, tiltY, tiltZ;
 Robot rbt;
@@ -29,6 +31,7 @@ void setup() {
   fullScreen(P3D);
   //size(1000, 800, P3D);
   textureMode(NORMAL);
+  hatsune = new Gif("ezgif-split/frame_","_delay-0.03s.gif",80,100,400,600,600,1);
   wkey = akey = skey = dkey = false;
   eyeX = 0;
   eyeY = 500;
@@ -49,7 +52,7 @@ void setup() {
   map = loadImage("map.png");
   miku = loadImage("hatsune_miku_pixelart_by_magnet_crayon-d5v6fpj.png");
   diamond = loadImage("Diamond.png");
-  depthMap = loadImage("R.png");
+  depthMap = loadImage("output-onlinepngtools.png");
 
   try {
     rbt = new Robot();
@@ -69,8 +72,9 @@ void draw() {
   controlCamera();
   sun();
   drawMap();
-  cord();
+ // cord();
   gravity();
+  hatsune.show();
 }
 
 
@@ -114,17 +118,24 @@ void drawMap() {
   pushMatrix();
   //translate(blockSize/2, blockSize/2, blockSize/2);
   //translate(0, -blockSize, 0);
-  for (int i = 0; i < miku.width; i++) {
-    for (int j = 0; j < miku.height; j++) {
+  for (int i = 0; i < depthMap.width; i++) {
+    for (int j = 0; j < depthMap.height; j++) {
       color c =depthMap.get(i, j);
       color depth = depthMap.get(i, j);
       int y = lastBlock;
-      if (depth == color(229, 134, 37)) y = height - 5*blockSize;
-      if (depth ==  color(240, 174, 53)) y = height - 4*blockSize;
-      if (depth == color (249, 218, 70)) y = height - 3*blockSize;
-      if (depth == color(165, 224, 54)) y = height - 2*blockSize;
-      if (depth == color(83, 197, 116)) y = height - 1*blockSize;
-      if (depth == color(0, 138, 254))y = height ;
+      //if (depth == color(229, 134, 37)) y = height - 5*blockSize;
+      //if (depth ==  color(240, 174, 53)) y = height - 4*blockSize;
+      //if (depth == color (249, 218, 70)) y = height - 3*blockSize;
+      //if (depth == color(165, 224, 54)) y = height - 2*blockSize;
+      //if (depth == color(83, 197, 116)) y = height - 1*blockSize;
+      //if (depth == color(0, 138, 254))y = height ;
+      if (depth == color(230,138,39)) y = height - 5*blockSize;
+      if (depth ==  color(240, 175, 53)) y = height - 4*blockSize;
+      if (depth == color (246, 218, 69)) y = height - 3*blockSize;
+      if (depth == color(166, 224, 54)) y = height - 2*blockSize;
+      if (depth == color(124, 210, 84)) y = height - 2*blockSize;
+      if (depth == color(83, 197, 117)) y = height - 1*blockSize;
+      if (depth == color(4, 141, 247))y = height ;
       lastBlock = y;
 
       if ( c == blue) {
@@ -157,12 +168,20 @@ void gravity() {
   mapy = int(eyeZ/blockSize);
 
   color depth = depthMap.get((int)mapx, (int)mapy);
-  if (depth == color(229, 134, 37)) y = height - 5*blockSize;
-  if (depth ==  color(240, 174, 53)) y = height - 4*blockSize;
-  if (depth == color (249, 218, 70)) y = height - 3*blockSize;
-  if (depth == color(165, 224, 54)) y = height - 2*blockSize;
-  if (depth == color(83, 197, 116)) y = height - 1*blockSize;
-  if (depth == color(0, 138, 254))y = height ;
+  //if (depth == color(229, 134, 37)) y = height - 5*blockSize;
+  //if (depth ==  color(240, 174, 53)) y = height - 4*blockSize;
+  //if (depth == color (249, 218, 70)) y = height - 3*blockSize;
+  //if (depth == color(165, 224, 54)) y = height - 2*blockSize;
+  //if (depth == color(83, 197, 116)) y = height - 1*blockSize;
+  //if (depth == color(0, 138, 254))y = height ;
+  
+  if (depth == color(230,138,39)) y = height - 5*blockSize;
+      if (depth ==  color(240, 175, 53)) y = height - 4*blockSize;
+      if (depth == color (246, 218, 69)) y = height - 3*blockSize;
+      if (depth == color(166, 224, 54)) y = height - 2*blockSize;
+      if (depth == color(124, 210, 84)) y = height - 2*blockSize;
+      if (depth == color(83, 197, 117)) y = height - 1*blockSize;
+      if (depth == color(4, 141, 247))y = height ;
   //println(eyeY + " y " + y);
   println(eyeX + " " + eyeZ);
   lastBlock = y;
