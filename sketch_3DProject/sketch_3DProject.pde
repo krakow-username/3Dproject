@@ -18,6 +18,11 @@ int gridSize = 8000;
 
 int lastBlock = height;
 
+int gravityAcc = 10;
+int vy = 0;
+
+int jumpCD = 0;
+int jumpCDLimit = 20;
 
 int focusDistance = 600;
 int speed = 50;
@@ -31,7 +36,7 @@ void setup() {
   fullScreen(P3D);
   //size(1000, 800, P3D);
   textureMode(NORMAL);
-  hatsune = new Gif("ezgif-split/frame_","_delay-0.03s.gif",80,100,400,600,600,1);
+  hatsune = new Gif("ezgif-split/frame_", "_delay-0.03s.gif", 80, 100, 400, 600, 600, 1);
   wkey = akey = skey = dkey = false;
   eyeX = 0;
   eyeY = 500;
@@ -72,7 +77,7 @@ void draw() {
   controlCamera();
   sun();
   drawMap();
- // cord();
+  // cord();
   gravity();
   hatsune.show();
 }
@@ -129,7 +134,7 @@ void drawMap() {
       //if (depth == color(165, 224, 54)) y = height - 2*blockSize;
       //if (depth == color(83, 197, 116)) y = height - 1*blockSize;
       //if (depth == color(0, 138, 254))y = height ;
-      if (depth == color(230,138,39)) y = height - 5*blockSize;
+      if (depth == color(230, 138, 39)) y = height - 5*blockSize;
       if (depth ==  color(240, 175, 53)) y = height - 4*blockSize;
       if (depth == color (246, 218, 69)) y = height - 3*blockSize;
       if (depth == color(166, 224, 54)) y = height - 2*blockSize;
@@ -141,7 +146,7 @@ void drawMap() {
       if ( c == blue) {
         pushMatrix();
         noStroke();
-        cubeD(i * blockSize , y, j * blockSize , diamond);
+        cubeD(i * blockSize, y, j * blockSize, diamond);
         popMatrix();
       } else if (c != white) {
         pushMatrix();
@@ -149,7 +154,7 @@ void drawMap() {
         fill(c);
         stroke(100);
         noStroke();
-        translate(i * blockSize , y, j * blockSize );
+        translate(i * blockSize, y, j * blockSize );
         box(blockSize, blockSize, blockSize);
         popMatrix();
       }
@@ -174,22 +179,26 @@ void gravity() {
   //if (depth == color(165, 224, 54)) y = height - 2*blockSize;
   //if (depth == color(83, 197, 116)) y = height - 1*blockSize;
   //if (depth == color(0, 138, 254))y = height ;
-  
-  if (depth == color(230,138,39)) y = height - 5*blockSize;
-      if (depth ==  color(240, 175, 53)) y = height - 4*blockSize;
-      if (depth == color (246, 218, 69)) y = height - 3*blockSize;
-      if (depth == color(166, 224, 54)) y = height - 2*blockSize;
-      if (depth == color(124, 210, 84)) y = height - 2*blockSize;
-      if (depth == color(83, 197, 117)) y = height - 1*blockSize;
-      if (depth == color(4, 141, 247))y = height ;
+
+  if (depth == color(230, 138, 39)) y = height - 5*blockSize;
+  if (depth ==  color(240, 175, 53)) y = height - 4*blockSize;
+  if (depth == color (246, 218, 69)) y = height - 3*blockSize;
+  if (depth == color(166, 224, 54)) y = height - 2*blockSize;
+  if (depth == color(124, 210, 84)) y = height - 2*blockSize;
+  if (depth == color(83, 197, 117)) y = height - 1*blockSize;
+  if (depth == color(4, 141, 247))y = height ;
   //println(eyeY + " y " + y);
-  println(eyeX + " " + eyeZ);
+  //println(eyeX + " " + eyeZ);
   lastBlock = y;
   y-= blockSize*3;
 
   if (eyeY-blockSize < y ) {
-    eyeY+= 20;
+    vy += gravityAcc;
+  } else {
+    eyeY = y + blockSize;
+    vy=0;
   }
+  eyeY+= vy;
 }
 
 
@@ -208,19 +217,25 @@ void controlCamera() {
     eyeZ += sin(LRheadAngle) *speed;
     eyeX += cos(LRheadAngle) * speed;
   }
-  if (skey) {
+  if (skey && canMoveFoward()) {
     eyeZ -= sin(LRheadAngle) *speed;
     eyeX -= cos(LRheadAngle) * speed;
   }
-  if (akey) {
+  if (akey && canMoveFoward()) {
     eyeZ += sin(LRheadAngle - PI/2) *speed;
     eyeX += cos(LRheadAngle - PI/2 ) * speed;
   }
-  if (dkey) {
+  if (dkey && canMoveFoward() ) {
     eyeZ += sin(LRheadAngle + PI/2) *speed;
     eyeX += cos(LRheadAngle + PI/2 ) * speed;
   }
-  if (spacekey) eyeY-= speed;
+  if (spacekey && jumpCD <= 0) {
+    eyeY -= 10;
+    vy = -60;
+    jumpCD = jumpCDLimit;
+    
+  }
+  jumpCD--;
   if (shiftkey) eyeY+= speed;
 
   if (!skipFrame) {
@@ -246,13 +261,11 @@ void controlCamera() {
   }
 }
 
-void cord(){
+void cord() {
   stroke(#F23D3D);
   strokeWeight(10);
- line(0,0,0,0,5000,0); 
- sphere(10);
-  
-  
+  line(0, 0, 0, 0, 5000, 0);
+  sphere(10);
 }
 
 
