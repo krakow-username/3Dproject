@@ -1,5 +1,7 @@
 import java.awt.Robot;
 
+PShape gym;
+
 color white = #FFFFFF;
 color blue = #00F4FF;
 color top = color(229, 134, 37);
@@ -37,6 +39,7 @@ void setup() {
   //size(1000, 800, P3D);
   textureMode(NORMAL);
   hatsune = new Gif("ezgif-split/frame_", "_delay-0.03s.gif", 80, 100, 400, 600, 600, 1);
+  gym = loadShape("professors lab/professors lab.obj");
   wkey = akey = skey = dkey = false;
   eyeX = 0;
   eyeY = 500;
@@ -80,6 +83,11 @@ void draw() {
   // cord();
   gravity();
   hatsune.show();
+  pushMatrix();
+  rotate(PI);
+  scale(100);
+  shape(gym);
+  popMatrix();
 }
 
 
@@ -123,7 +131,7 @@ void drawMap() {
   pushMatrix();
   //translate(blockSize/2, blockSize/2, blockSize/2);
   //translate(0, -blockSize, 0);
-  for (int i = 0; i < depthMap.width; i++) {
+  for (int i = 0; i < depthMap.width/2; i++) {
     for (int j = 0; j < depthMap.height; j++) {
       color c =depthMap.get(i, j);
       color depth = depthMap.get(i, j);
