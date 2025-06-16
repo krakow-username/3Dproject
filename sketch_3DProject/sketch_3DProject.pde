@@ -1,11 +1,16 @@
 import java.awt.Robot;
 
-PShape gym;
+final int MAP = 1;
+final int GYM = 2;
+int mode = MAP;
+
+PShape gym, ingym;
 
 color white = #FFFFFF;
 color blue = #00F4FF;
 color top = color(229, 134, 37);
 color sky =#A0F1F7;
+color black = color(0, 0, 0);
 
 Gif hatsune;
 
@@ -40,6 +45,7 @@ void setup() {
   textureMode(NORMAL);
   hatsune = new Gif("ezgif-split/frame_", "_delay-0.03s.gif", 80, 100, 400, 600, 600, 1);
   gym = loadShape("professors lab/professors lab.obj");
+  ingym = loadShape("oak-lab/oak_lab.obj");
   wkey = akey = skey = dkey = false;
   eyeX = 0;
   eyeY = 500;
@@ -79,15 +85,22 @@ void draw() {
   drawFocalPoint();
   controlCamera();
   sun();
+  if (mode == MAP){
   drawMap();
+  hatsune.show();
+  }
+  if (mode == GYM){
+     pushMatrix();
+        //translate(i * blockSize + blockSize/1.5, height - 8*blockSize, j * blockSize + 5*blockSize + blockSize/2);
+        //rotate(PI);
+        rotateX(PI);
+        scale(500);
+        shape(ingym);
+        popMatrix();
+  }
   // cord();
   gravity();
-  hatsune.show();
-  pushMatrix();
-  rotate(PI);
-  scale(100);
-  shape(gym);
-  popMatrix();
+  
 }
 
 
@@ -156,6 +169,14 @@ void drawMap() {
         noStroke();
         cubeD(i * blockSize, y, j * blockSize, diamond);
         popMatrix();
+      } else  if (c == black) {
+        pushMatrix();
+        translate(i * blockSize + blockSize/1.5, height - 8*blockSize, j * blockSize + 5*blockSize + blockSize/2);
+        //rotate(PI);
+        rotateX(PI);
+        scale(110);
+        shape(gym);
+        popMatrix();
       } else if (c != white) {
         pushMatrix();
         translate(blockSize/2, blockSize/2, blockSize/2);
@@ -195,6 +216,8 @@ void gravity() {
   if (depth == color(124, 210, 84)) y = height - 2*blockSize;
   if (depth == color(83, 197, 117)) y = height - 1*blockSize;
   if (depth == color(4, 141, 247))y = height ;
+  if (depth == color(195,195,195)) y = height - 7*blockSize;
+  if (depth == black) mode = GYM;
   //println(eyeY + " y " + y);
   //println(eyeX + " " + eyeZ);
   lastBlock = y;
@@ -241,7 +264,6 @@ void controlCamera() {
     eyeY -= 10;
     vy = -60;
     jumpCD = jumpCDLimit;
-    
   }
   jumpCD--;
   if (shiftkey) eyeY+= speed;
