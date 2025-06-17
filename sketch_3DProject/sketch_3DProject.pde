@@ -17,7 +17,7 @@ Gif hatsune;
 boolean wkey, akey, skey, dkey, spacekey, shiftkey, skipFrame;
 float eyeX, eyeY, eyeZ, focX, focY, focZ, tiltX, tiltY, tiltZ;
 Robot rbt;
-PImage map, miku, diamond, depthMap;
+PImage map, miku, diamond, depthMap, ingymmap;
 
 float sunAngle = 3;
 int blockSize = 100;
@@ -67,6 +67,7 @@ void setup() {
   miku = loadImage("hatsune_miku_pixelart_by_magnet_crayon-d5v6fpj.png");
   diamond = loadImage("Diamond.png");
   depthMap = loadImage("output-onlinepngtools.png");
+  ingymmap = loadImage("ingymmap.png");
 
   try {
     rbt = new Robot();
@@ -85,22 +86,21 @@ void draw() {
   drawFocalPoint();
   controlCamera();
   sun();
-  if (mode == MAP){
   drawMap();
-  hatsune.show();
+  if (mode == MAP) {
+    hatsune.show();
   }
-  if (mode == GYM){
-     pushMatrix();
-        //translate(i * blockSize + blockSize/1.5, height - 8*blockSize, j * blockSize + 5*blockSize + blockSize/2);
-        //rotate(PI);
-        rotateX(PI);
-        scale(500);
-        shape(ingym);
-        popMatrix();
+  if (mode == GYM) {
+    pushMatrix();
+    translate(14*blockSize,height +100 ,14.5*blockSize);
+    //rotate(PI);
+    rotateX(PI);
+    scale(950);
+    shape(ingym);
+    popMatrix();
   }
   // cord();
   gravity();
-  
 }
 
 
@@ -148,13 +148,12 @@ void drawMap() {
     for (int j = 0; j < depthMap.height; j++) {
       color c =depthMap.get(i, j);
       color depth = depthMap.get(i, j);
+      if (mode == GYM) {
+        c =ingymmap.get(i, j);
+        depth = ingymmap.get(i, j);
+      }
       int y = lastBlock;
-      //if (depth == color(229, 134, 37)) y = height - 5*blockSize;
-      //if (depth ==  color(240, 174, 53)) y = height - 4*blockSize;
-      //if (depth == color (249, 218, 70)) y = height - 3*blockSize;
-      //if (depth == color(165, 224, 54)) y = height - 2*blockSize;
-      //if (depth == color(83, 197, 116)) y = height - 1*blockSize;
-      //if (depth == color(0, 138, 254))y = height ;
+
       if (depth == color(230, 138, 39)) y = height - 5*blockSize;
       if (depth ==  color(240, 175, 53)) y = height - 4*blockSize;
       if (depth == color (246, 218, 69)) y = height - 3*blockSize;
@@ -163,6 +162,7 @@ void drawMap() {
       if (depth == color(83, 197, 117)) y = height - 1*blockSize;
       if (depth == color(4, 141, 247))y = height ;
       lastBlock = y;
+      
 
       if ( c == blue) {
         pushMatrix();
@@ -202,12 +202,9 @@ void gravity() {
   mapy = int(eyeZ/blockSize);
 
   color depth = depthMap.get((int)mapx, (int)mapy);
-  //if (depth == color(229, 134, 37)) y = height - 5*blockSize;
-  //if (depth ==  color(240, 174, 53)) y = height - 4*blockSize;
-  //if (depth == color (249, 218, 70)) y = height - 3*blockSize;
-  //if (depth == color(165, 224, 54)) y = height - 2*blockSize;
-  //if (depth == color(83, 197, 116)) y = height - 1*blockSize;
-  //if (depth == color(0, 138, 254))y = height ;
+  if (mode == GYM) {
+    depth = ingymmap.get((int)mapx, (int)mapy);
+  }
 
   if (depth == color(230, 138, 39)) y = height - 5*blockSize;
   if (depth ==  color(240, 175, 53)) y = height - 4*blockSize;
@@ -216,8 +213,15 @@ void gravity() {
   if (depth == color(124, 210, 84)) y = height - 2*blockSize;
   if (depth == color(83, 197, 117)) y = height - 1*blockSize;
   if (depth == color(4, 141, 247))y = height ;
-  if (depth == color(195,195,195)) y = height - 7*blockSize;
-  if (depth == black) mode = GYM;
+  if (depth == color(195, 195, 195)) y = height - 7*blockSize;
+  
+  if (mode == GYM) y -=200;
+  
+  if (depth == black) {
+    mode = GYM;
+    eyeX = 7*blockSize;
+    eyeZ = blockSize;
+  }
   //println(eyeY + " y " + y);
   //println(eyeX + " " + eyeZ);
   lastBlock = y;
