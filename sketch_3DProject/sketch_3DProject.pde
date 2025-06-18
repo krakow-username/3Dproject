@@ -39,12 +39,16 @@ float mouseSen = 0.01;
 int sunx = 0;
 int suny = 0 ;
 
+int temX;
+int temZ;
+
 void setup() {
   fullScreen(P3D);
   //size(1000, 800, P3D);
   textureMode(NORMAL);
   hatsune = new Gif("ezgif-split/frame_", "_delay-0.03s.gif", 80, 100, 400, 600, 600, 1);
   gym = loadShape("professors lab/professors lab.obj");
+  //gym = loadShape("pokecentre/lets_go_pokecenter.obj");
   ingym = loadShape("oak-lab/oak_lab.obj");
   wkey = akey = skey = dkey = false;
   eyeX = 0;
@@ -78,6 +82,10 @@ void setup() {
 }
 
 void draw() {
+  pushMatrix();
+  scale(50);
+  shape(gym);
+  popMatrix();
   //lights();
   //pointLight(255,255,255,eyeX,eyeY,eyeZ);
   background(sky);
@@ -92,7 +100,7 @@ void draw() {
   }
   if (mode == GYM) {
     pushMatrix();
-    translate(14*blockSize,height +100 ,14.5*blockSize);
+    translate(14*blockSize, height +100, 14.5*blockSize);
     //rotate(PI);
     rotateX(PI);
     scale(950);
@@ -162,16 +170,16 @@ void drawMap() {
       if (depth == color(83, 197, 117)) y = height - 1*blockSize;
       if (depth == color(4, 141, 247))y = height ;
       lastBlock = y;
-      
+
 
       if ( c == blue) {
         pushMatrix();
         noStroke();
         cubeD(i * blockSize, y, j * blockSize, diamond);
         popMatrix();
-      } else  if (c == black) {
+      } else  if (c == black && mode == MAP) {
         pushMatrix();
-        translate(i * blockSize + blockSize/1.5, height - 8*blockSize, j * blockSize + 5*blockSize + blockSize/2);
+        translate(i * blockSize + blockSize/1.5, y - 4.8*blockSize, j * blockSize + 5*blockSize + blockSize/2);
         //rotate(PI);
         rotateX(PI);
         scale(110);
@@ -214,13 +222,20 @@ void gravity() {
   if (depth == color(83, 197, 117)) y = height - 1*blockSize;
   if (depth == color(4, 141, 247))y = height ;
   if (depth == color(195, 195, 195)) y = height - 7*blockSize;
-  
+
   if (mode == GYM) y -=200;
-  
-  if (depth == black) {
+
+  if (depth == black && mode == MAP) {
+    println("A");
+    temZ = (int)eyeZ - 3 * blockSize;
+    temX = (int)eyeX ;
     mode = GYM;
-    eyeX = 7*blockSize;
-    eyeZ = blockSize;
+    eyeX = 15*blockSize;
+    eyeZ = 3*blockSize;
+  } else if (depth == black && mode == GYM) {
+    mode = MAP;
+    eyeX = temX;
+    eyeZ = temZ;
   }
   //println(eyeY + " y " + y);
   //println(eyeX + " " + eyeZ);

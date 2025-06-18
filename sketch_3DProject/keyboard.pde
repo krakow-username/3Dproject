@@ -33,6 +33,7 @@ boolean canMoveFoward() {
   if (depth == color(124, 210, 84)) y = height - 2*blockSize;
   if (depth == color(83, 197, 117)) y = height - 1*blockSize;
   if (depth == color(4, 141, 247))y = height ;
+  if (depth == color(195, 195, 195)) y = height - 7*blockSize;
   y-= blockSize*3;
   if (eyeY-blockSize > y ) {
     eyeY-=blockSize;
