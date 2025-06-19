@@ -4,7 +4,7 @@ final int MAP = 1;
 final int GYM = 2;
 int mode = MAP;
 
-PShape gym, ingym;
+PShape gym, ingym, mi;
 
 color white = #FFFFFF;
 color blue = #00F4FF;
@@ -49,6 +49,7 @@ void setup() {
   hatsune = new Gif("ezgif-split/frame_", "_delay-0.03s.gif", 80, 100, 400, 600, 600, 1);
   gym = loadShape("professors lab/professors lab.obj");
   //gym = loadShape("pokecentre/lets_go_pokecenter.obj");
+  mi = loadShape("ImageToStl.com_psychic_type_pokemon_trainer_hatsune_miku/psychic_type_pokemon_trainer_hatsune_miku.obj");
   ingym = loadShape("oak-lab/oak_lab.obj");
   wkey = akey = skey = dkey = false;
   eyeX = 0;
@@ -82,10 +83,7 @@ void setup() {
 }
 
 void draw() {
-  pushMatrix();
-  scale(50);
-  shape(gym);
-  popMatrix();
+
   //lights();
   //pointLight(255,255,255,eyeX,eyeY,eyeZ);
   background(sky);
@@ -96,6 +94,12 @@ void draw() {
   sun();
   drawMap();
   if (mode == MAP) {
+    pushMatrix();
+    translate(1000, height - 300, 2000);
+    rotateX(PI);
+    scale(200);
+    shape(mi);
+    popMatrix();
     hatsune.show();
   }
   if (mode == GYM) {
@@ -107,6 +111,7 @@ void draw() {
     shape(ingym);
     popMatrix();
   }
+
   // cord();
   gravity();
 }
